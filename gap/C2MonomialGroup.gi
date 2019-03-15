@@ -216,7 +216,6 @@ InstallMethod(Size,
 	function(G)
 		local n;
 		n := FamilyObj(G)!.n;
-		# TODO correct size ?
 		return 2^n * Factorial(n);
 	end
 );
