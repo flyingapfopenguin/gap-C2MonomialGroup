@@ -8,7 +8,9 @@
 ### CONSTRUCTORS
 #########################
 
-InstallGlobalFunction(C2MonomialGroup,
+InstallMethod(C2MonomialGroup,
+	"for a positive integer",
+	[ IsCyclotomic ],
 	function(n)
 		local fam, G;
 		if not IsPosInt(n) then
@@ -25,19 +27,39 @@ InstallGlobalFunction(C2MonomialGroup,
 	end
 );
 
-InstallGlobalFunction(C2MonomialPermNC,
-	function(fam, map)
+InstallMethod(C2MonomialPermNC,
+	"for a dense list and an object in `IsFamily'",
+	[ IsDenseList, IsFamily ],
+	function(map, fam)
 		return Objectify( NewType(ElementsFamily(fam), IsC2MonomialPerm and IsC2MonomialPermRep),
 			rec(mapping:=map));
 	end
 );
 
-InstallGlobalFunction(C2MonomialPerm,
-	function(fam, map)
+InstallMethod(C2MonomialPerm,
+	"for a dense list and an object in `IsFamily'",
+	[ IsDenseList, IsFamily ],
+	function(map, fam)
 		Assert(0, IsDenseList(map));
 		Assert(0, Length(map) = fam!.n);
 		Assert(0, AsSet(List(map, AbsInt)) = [1..(fam!.n)]);
-		return C2MonomialPermNC(fam, map);
+		return C2MonomialPermNC(map, fam);
+	end
+);
+
+InstallMethod(C2MonomialPerm,
+	"for a dense list and an object in `IsC2MonomialGroup'",
+	[ IsDenseList, IsC2MonomialGroup ],
+	function(map, G)
+		return C2MonomialPerm(map, FamilyObj(G));
+	end
+);
+
+InstallMethod(C2MonomialPerm,
+	"for a dense list and an object in `IsC2MonomialPerm'",
+	[ IsDenseList, IsC2MonomialPerm ],
+	function(map, p)
+		return C2MonomialPerm(map, CollectionsFamily(FamilyObj(p)));
 	end
 );
 
@@ -74,7 +96,7 @@ InstallMethod(OneImmutable,
 	function(G)
 		local fam;
 		fam := FamilyObj(G);
-		return C2MonomialPerm(fam, [1..(fam!.n)]);
+		return C2MonomialPerm([1..(fam!.n)], fam);
 	end
 );
 
@@ -84,7 +106,7 @@ InstallMethod(OneImmutable,
 	function(p)
 		local fam;
 		fam := CollectionsFamily(FamilyObj(p));
-		return C2MonomialPerm(fam, [1..(fam!.n)]);
+		return C2MonomialPerm([1..(fam!.n)], fam);
 	end
 );
 
@@ -173,7 +195,7 @@ InstallMethod(\*,
 	function(p, q)
 		local fam;
 		fam := CollectionsFamily(FamilyObj(p));
-		return C2MonomialPerm(fam, List( [1..(fam!.n)], i -> (i^q)^p));
+		return C2MonomialPerm(List( [1..(fam!.n)], i -> (i^q)^p), fam);
 	end
 );
 
@@ -183,7 +205,7 @@ InstallMethod(InverseOp,
 	function(p)
 		local fam;
 		fam := CollectionsFamily(FamilyObj(p));
-		return C2MonomialPerm(fam, List( [1..(fam!.n)], i -> i/p));
+		return C2MonomialPerm(List( [1..(fam!.n)], i -> i/p), fam);
 	end
 );
 
@@ -200,12 +222,12 @@ InstallMethod(GeneratorsOfGroup,
 		n := fam!.n;
 		res := [];
 		if n > 1 then
-			Append(res, [C2MonomialPerm(fam, Concatenation([2,1],[3..n]))]);
+			Append(res, [C2MonomialPerm(Concatenation([2,1],[3..n]), fam)]);
 			if n > 2 then
-				Append(res, [C2MonomialPerm(fam, Concatenation([2..n],[1]))]);
+				Append(res, [C2MonomialPerm(Concatenation([2..n],[1]), fam)]);
 			fi;
 		fi;
-		Append(res, [C2MonomialPerm(fam, Concatenation([-1],[2..n]))]);
+		Append(res, [C2MonomialPerm(Concatenation([-1],[2..n]), fam)]);
 		return res;
 	end
 );

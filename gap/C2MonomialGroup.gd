@@ -18,11 +18,13 @@
 #!   Insert documentation for your function here
 
 DeclareCategory("IsC2MonomialGroup", IsGroup and IsFinite);
-DeclareGlobalFunction("C2MonomialGroup");
+DeclareOperation("C2MonomialGroup", [ IsCyclotomic ]);
 
 DeclareCategory("IsC2MonomialPerm", IsAssociativeElement and IsMultiplicativeElementWithInverse and CanEasilyCompareElements);
 DeclareCategoryCollections("IsC2MonomialPerm");
 InstallTrueMethod(IsGeneratorsOfMagmaWithInverses, IsC2MonomialPermCollection);
 DeclareRepresentation("IsC2MonomialPermRep", IsComponentObjectRep, ["mapping"]);
-DeclareGlobalFunction("C2MonomialPermNC");
-DeclareGlobalFunction("C2MonomialPerm");
+DeclareOperation("C2MonomialPermNC", [ IsDenseList, IsFamily ]);
+DeclareOperation("C2MonomialPerm", [ IsDenseList, IsFamily ]);
+DeclareOperation("C2MonomialPerm", [ IsDenseList, IsC2MonomialGroup ]);
+DeclareOperation("C2MonomialPerm", [ IsDenseList, IsC2MonomialPerm ]);
